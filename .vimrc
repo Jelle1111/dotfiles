@@ -1,7 +1,7 @@
 """""""""""""""""""""""
 "  plugin management  "
-"""""""""""""""""""""""
-set nocompatible 
+""""""""""""""""""""""
+set nocompatible
 filetype off
 
 set rtp+=$HOME/bin/vim/plugins/vundle.vim
@@ -12,7 +12,8 @@ Plugin 'gmarik/vundle.vim'
 Plugin 'SirVer/ultisnips'
 Plugin 'honza/vim-snippets'
 Plugin 'scrooloose/nerdtree' 
-Plugin 'ctrlpvim/ctrlp.vim'
+"Plugin 'ctrlpvim/ctrlp.vim'
+Plugin 'scrooloose/syntastic'
 "Plugin 'Shougo/neocomplete'
 "Plugin 'artur-shaik/vim-javacomplete2'
 call vundle#end()
@@ -21,29 +22,48 @@ filetype plugin indent on
 """""""""""""""""
 "  key mappings  "
 """"""""""""""""""
+let mapleader = ";"
+nnoremap <F5> :!%:p<Enter><Enter>
+nnoremap <leader>r :!%:p<Enter>
+
 " split navigations
 nnoremap <C-J> <C-W><C-J>
 nnoremap <C-K> <C-W><C-K>
 nnoremap <C-L> <C-W><C-L>
 nnoremap <C-H> <C-W><C-H>
 
-" split window
-" nmap <leader>SW
+" make file executable
+au BufWritePost ~/.vimrc silent execute "!cp % ~/dotfiles/.vimrc"
+au BufWritePost * if getline(1) =~ "^#!.*/bin/" | silent execute "!chmod +x %" | endif
 map <F2> :echo 'Current time is ' . strftime('%c')<CR>
 map <C-S> :echo 'De tijd is ' . strftime('%c')<CR>
-"map <C-S> :w<CR>
+
+
+"""""""""""""""
+"  syntastic  "
+"""""""""""""""
+set statusline+=%#warningmsg#
+set statusline+=%{SyntasticStatuslineFlag()}
+set statusline+=%*
+
+let g:syntastic_always_populate_loc_list=1
+let g:syntastic_auto_loc_list=1
+let g:syntastic_check_on_open=1
+let g:syntastic_check_on_wq=1
+
+
 """"""""""""""""""""""
 "  PEP8 indentation  "
 """"""""""""""""""""""
 au BufNewFile,BufRead *.py
 	\ set tabstop=4
-	\ set softtabstop=4
-	\ set shiftwidth=4
-	\ set textwidth=79
-	\ set expandtab
-	\ set autoindent
-	\ set fileformat=unix
-au BufRead,BufNewFile *.py,*.pyw,*.c,*.h match BadWhitespace /\s\+$/
+"	\ set softtabstop=4
+"	\ set shiftwidth=4
+"	\ set textwidth=79
+"	\ set expandtab
+"	\ set autoindent
+"	\ set fileformat=unix
+"au BufRead,BufNewFile *.py,*.pyw,*.c,*.h match BadWhitespace /\s\+$/
 """""""""""""""""""""""""""""""""
 "  set ultisnips configuration  "
 """""""""""""""""""""""""""""""""
@@ -54,8 +74,8 @@ let g:UltiSnipsJumpBackwardTrigger="<S-tab>"
 """""""""""""""""""""""""""
 "  controlP coniguration  "
 """""""""""""""""""""""""""
-let g:ctrlp_map="<c-p>"
-let g:ctrlp_cmd="CtrlP"
+"let g:ctrlp_map="<c-p>"
+"let g:ctrlp_cmd="CtrlP"
 """"""""""""""""""""""""""""""""
 "  java complete coniguration  "
 """"""""""""""""""""""""""""""""
@@ -166,14 +186,12 @@ map <C-n> :NERDTreeToggle<CR>
 set cindent
 colorscheme darkblue
 set number
-
-
 """""""""""""""""""""""""""""""
 "  set temp file directories  "
 """""""""""""""""""""""""""""""
 set directory=$HOME/bin/vim/temp/swap//,.
-set undodir=c$HOME/bin/vim/temp/undo//,.
-set backupdir=c$HOME/bin/vim/temp/backup//,.
+set undodir=$HOME/bin/vim/temp/undo//,.
+set backupdir=$HOME/bin/vim/temp/backup//,.
 " Double slash does not actually work for backupdir, here's a fix
 au BufWritePre * let &backupext='@'.substitute(substitute(substitute(expand('%:p:h'), '/', '%', 'g'), '\', '%', 'g'), ':', '', 'g')
 set viminfo='10,\"100,:20,n$HOME/.viminfo
